@@ -47,7 +47,7 @@ function searchAndDisplayDate() {
 
 // Function to extract the date and time from the HTML
 function extractDateTimeFromHTML(html) {
-  const dateTimeRegex = /"publishedDate":"(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/; // Regex to match the date and time format
+  const dateTimeRegex = /"firstPublishedDate":"(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/; // Regex to match the date and time format
   const match = html.match(dateTimeRegex);
   if (match && match[1] && match[2]) {
     return {
