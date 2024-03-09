@@ -6,43 +6,39 @@ let lastTerm = null;
 function searchAndDisplayDate() {
   if (modified) return; // Exit if already modified
   const searchTerm = 'Zuletzt geändert'; // Term to search for
-  const elements = document.querySelectorAll('body, body *'); // Select all elements in the body
+  document.querySelectorAll('body, body *').forEach(element => {
+    // Ensure we're working with text nodes only
+    if (element.nodeType === Node.ELEMENT_NODE && element.innerHTML.includes(searchTerm)) {
+      const nodes = Array.from(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE && node.nodeValue.includes(searchTerm));
+      nodes.forEach(node => {
+        const index = node.nodeValue.indexOf(searchTerm);
+        if (index !== -1) {
+          // Extract or create the necessary content
+          const dateAndTime = extractDateTimeFromHTML(document.documentElement.innerHTML); // Assuming this function works as intended
+          let contentToAdd;
+          if (dateAndTime) {
+            const formattedDateTime = formatDateAndTime(dateAndTime);
+            contentToAdd = document.createTextNode(`${formattedDateTime} | `);
+          } else {
+            // Create a reload button if date and time are not found
+            const button = document.createElement('button');
+            button.textContent = 'Veröffentlicht';
+            button.onclick = () => window.location.reload(true);
+            contentToAdd = button;
+          }
 
-  elements.forEach(element => {
-    const html = element.innerHTML;
-    const index = html.indexOf(searchTerm);
-    if (index !== -1) {
-      const dateAndTime = extractDateTimeFromHTML(html); // Extract date and time from HTML
+          // Insert the content before the text node in the element
+          const span = document.createElement('span');
+          span.appendChild(contentToAdd);
+          element.insertBefore(span, node);
 
-      let newHTMLContent;
-      if (dateAndTime) {
-        const formattedDateTime = formatDateAndTime(dateAndTime);
-        const newTerm = `${formattedDateTime} | ${searchTerm}` + html.slice(index + searchTerm.length);
-        if (newTerm != lastTerm) {
-          newHTMLContent = html.slice(0, index) + newTerm;
-          lastTerm = newTerm;
-        }
-      } else {
-        // Date and time not found, add a button instead
-        const buttonHTML = `<button onclick="window.location.reload(true);">Veröffentlicht</button>`;
-        const newTerm = `${buttonHTML} | ${searchTerm}` + html.slice(index + searchTerm.length);
-        if (newTerm != lastTerm) {
-          const newHTMLContent = html.slice(0, index) + newTerm;
-          element.innerHTML = newHTMLContent;
           modified = true; // Indicate modification has occurred
-          lastTerm = newTerm;
         }
-      }
-
-      if (newHTMLContent) {
-        element.innerHTML = newHTMLContent;
-        modified = true; // Set flag to true
-      }
-
-      return; // Exit the loop since modification has been made
+      });
     }
   });
 }
+
 
 
 // Function to extract the date and time from the HTML
