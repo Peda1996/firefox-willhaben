@@ -17,7 +17,7 @@ function searchAndDisplayDate() {
       let newHTMLContent;
       if (dateAndTime) {
         const formattedDateTime = formatDateAndTime(dateAndTime);
-        const newTerm = `Veröffentlicht: ${formattedDateTime} | ${searchTerm}` + html.slice(index + searchTerm.length);
+        const newTerm = `${formattedDateTime} | ${searchTerm}` + html.slice(index + searchTerm.length);
         if (newTerm != lastTerm) {
           newHTMLContent = html.slice(0, index) + newTerm;
           lastTerm = newTerm;
