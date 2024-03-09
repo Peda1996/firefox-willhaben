@@ -24,10 +24,12 @@ function searchAndDisplayDate() {
         }
       } else {
         // Date and time not found, add a button instead
-        const buttonHTML = `<button onclick="location.reload();">Neu laden um Datum anzusehen</button>`;
+        const buttonHTML = `<button onclick="window.location.reload(true);">Veröffentlicht</button>`;
         const newTerm = `${buttonHTML} | ${searchTerm}` + html.slice(index + searchTerm.length);
         if (newTerm != lastTerm) {
-          newHTMLContent = html.slice(0, index) + newTerm;
+          const newHTMLContent = html.slice(0, index) + newTerm;
+          element.innerHTML = newHTMLContent;
+          modified = true; // Indicate modification has occurred
           lastTerm = newTerm;
         }
       }
